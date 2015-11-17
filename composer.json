@@ -9,6 +9,13 @@
             "email": "milkpod29.me@gmail.com"
         }
     ],
+    "repositories": [
+        { "packagist": false },
+        {
+            "type": "vcs",
+            "url": "git@github.com:milkpod29/lullaby.git"
+        }
+    ],
     "require": {
         "php": ">=5.5.9",
         "illuminate/database": "5.1.*",
