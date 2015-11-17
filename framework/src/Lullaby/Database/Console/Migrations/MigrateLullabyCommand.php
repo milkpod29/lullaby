@@ -17,7 +17,7 @@ class MigrateLullabyCommand extends BaseCommand
         {--create= : The table to be created.}
         {--table= : The table to migrate.}
         {--path= : The location where the migration file should be created.}
-        {--init= : The table definition file.}';
+        {--definition= : The table definition file.}';
 
     /**
      * The console command description.

@@ -101,7 +101,7 @@ class MigrationCreator
         // Here we will replace the table place-holders with the table specified by
         // the developer, which is useful for quickly creating a tables creation
         // or update migration from the console instead of typing it manually.
-        if (! is_null($table)) {
+        if (!is_null($table)) {
             $stub = str_replace('DummyTable', $table, $stub);
         }
 
@@ -159,6 +159,7 @@ class MigrationCreator
      * Register a post migration create hook.
      *
      * @param  \Closure  $callback
+     *
      * @return void
      */
     public function afterCreate(Closure $callback)
@@ -171,6 +172,7 @@ class MigrationCreator
      *
      * @param  string  $name
      * @param  string  $path
+     *
      * @return string
      */
     protected function getPath($name, $path)
