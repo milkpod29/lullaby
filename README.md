@@ -27,5 +27,5 @@ Add the following to your require block in composer.json config
 ### Migrations
 
 ```
-$ php artisan make:migration create_users_table --definition=/tmp/tables.xlsx
+$ php artisan lullaby:migration create_users_table --definition=/tmp/tables.xlsx
 ```
