@@ -6,7 +6,7 @@ use Illuminate\Foundation\Composer;
 use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Database\Console\Migrations\BaseCommand;
 
-class MigrateMakeCommand extends BaseCommand
+class MigrateLullabyCommand extends BaseCommand
 {
     /**
      * The console command signature.
