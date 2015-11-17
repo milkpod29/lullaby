@@ -17,7 +17,9 @@ $ sudo mv composer.phar /usr/local/bin/composer
 Add the following to your require block in composer.json config
 
 ```
-"milkpod29/lullaby": "~1.0.*"
+"require-dev": {
+  "milkpod29/lullaby": "~1.0.*"
+}
 ```
 
 ## Configuration
