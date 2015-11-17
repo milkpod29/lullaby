@@ -18,8 +18,12 @@ Add the following to your require block in composer.json config
 
 ```
 "require-dev": {
-  "milkpod29/lullaby": "~1.0.*"
+  "milkpod29/lullaby": "1.0.*"
 }
+```
+
+```
+$ composer update
 ```
 
 ## Configuration
