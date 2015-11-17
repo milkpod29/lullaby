@@ -1,6 +1,6 @@
 <?php
 
-namespace Song\Database\Console\Migrations;
+namespace Lullaby\Database\Console\Migrations;
 
 use Illuminate\Foundation\Composer;
 use Illuminate\Database\Migrations\MigrationCreator;

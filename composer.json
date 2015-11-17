@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Song\\": "src/Song/"
+            "Lullaby\\": "framework/src/Lullaby/"
         }
     }
 }
