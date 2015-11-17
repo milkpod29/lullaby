@@ -1,6 +1,7 @@
 {
     "name": "milkpod29/lullaby",
     "description": "The Illuminate Database Custom Package.",
+    "type": "library",
     "license": "MIT",
     "keywords": ["laravel", "PHPExcel", "database"],
     "authors": [
