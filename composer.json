@@ -14,10 +14,5 @@
         "illuminate/database": "5.1.*",
         "PHPOffice/PHPExcel": "1.8",
         "doctrine/inflector": "~1.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "lullaby\\": "vendor/lullaby/framework/"
-        }
-    },
+    }
 }
