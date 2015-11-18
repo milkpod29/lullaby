@@ -5,6 +5,8 @@ namespace Lullaby\Database\Schema\Mappers;
 class PostgresMapper
 {
     /**
+     * column.
+     *
      * @param string $columnName
      * @param array $attributes
      *
@@ -82,24 +84,64 @@ class PostgresMapper
                 }
         }
 
-        // デフォルト値
         if (isset($attributes['default'])) {
             $result .= "->default({$attributes['default']})";
         }
 
-        // 制約
-        if (!empty($attributes['constraint'])) {
-            // 小文字変換
-            $string = strtolower($attributes['constraint']);
-            $result .= "->{$string}()";
-//            $result .= "->{$string}({$attributes['constraint']})";
-        }
-
-        // Not NULL許可
         if (empty($attributes['notnull'])) {
             $result .= "->nullable()";
         }
 
         return empty($result) ? $result : $result . ";";
+    }
+
+    /**
+     * Index.
+     *
+     * @param array $attributes
+     *
+     * @return string
+     */
+    public function index(array $attributes)
+    {
+        $constraint = "index";
+        if ($attributes['primary']) {
+            $constraint = "primary";
+        } else if ($attributes['unique']) {
+            $constraint = "unique";
+        }
+        $columns = $this->getColumns($attributes['columns']);
+        return "\$table->{$constraint}([{$columns}]);";
+    }
+
+    /**
+     * Foreign.
+     *
+     * @param array $attributes
+     *
+     * @return string
+     */
+    public function foreign(array $attributes)
+    {
+        $columns  = $this->getColumns($attributes['columns']);
+        $foreign  = "\$table->foreign([{$columns}])";
+        $foreign .= "->references('{$attributes['references']}')";
+        $foreign .= "->on('{$attributes['on']}');";
+        return $foreign;
+    }
+
+    /**
+     *
+     * @param $columns
+     * @return string
+     */
+    protected function getColumns($columns)
+    {
+        $result = "";
+        $columnArray = explode(',', $columns);
+        foreach ($columnArray as $column) {
+            $result .= "'{$column}',";
+        }
+        return substr($result, 0, -1);
     }
 }
