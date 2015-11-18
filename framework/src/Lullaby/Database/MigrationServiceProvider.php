@@ -12,6 +12,7 @@ use Illuminate\Database\Console\Migrations\RollbackCommand;
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
 use Illuminate\Database\Console\Migrations\StatusCommand;
 use Illuminate\Database\Migrations\DatabaseMigrationRepository;
+
 use Lullaby\Database\Migrations\MigrationCreator;
 use Lullaby\Database\Console\Migrations\MigrateLullabyCommand;
 
@@ -193,7 +194,7 @@ class MigrationServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the "make" migration command.
+     * Register the "lullaby" migration command.
      *
      * @return void
      */
@@ -220,7 +221,7 @@ class MigrationServiceProvider extends ServiceProvider
      */
     protected function registerCreator()
     {
-        $this->app->singleton('migration.creator', function ($app) {
+        $this->app->singleton('migration.creator.lullaby', function ($app) {
             return new MigrationCreator($app['files']);
         });
     }
@@ -236,7 +237,7 @@ class MigrationServiceProvider extends ServiceProvider
             'migrator', 'migration.repository', 'command.migrate',
             'command.migrate.rollback', 'command.migrate.reset',
             'command.migrate.refresh', 'command.migrate.install',
-            'command.migrate.status', 'migration.creator',
+            'command.migrate.status', 'migration.creator.lullaby',
             'command.migrate.make', 'command.migrate.lullaby',
         ];
     }

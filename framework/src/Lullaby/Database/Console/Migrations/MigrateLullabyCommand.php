@@ -3,8 +3,9 @@
 namespace Lullaby\Database\Console\Migrations;
 
 use Illuminate\Foundation\Composer;
-use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Database\Console\Migrations\BaseCommand;
+
+use Lullaby\Database\Migrations\MigrationCreator;
 
 class MigrateLullabyCommand extends BaseCommand
 {
@@ -29,7 +30,7 @@ class MigrateLullabyCommand extends BaseCommand
     /**
      * The migration creator instance.
      *
-     * @var \Illuminate\Database\Migrations\MigrationCreator
+     * @var \Lullaby\Database\Migrations\MigrationCreator
      */
     protected $creator;
 
@@ -43,8 +44,8 @@ class MigrateLullabyCommand extends BaseCommand
     /**
      * Create a new migration install command instance.
      *
-     * @param  \Illuminate\Database\Migrations\MigrationCreator  $creator
-     * @param  \Illuminate\Foundation\Composer  $composer
+     * @param \Lullaby\Database\Migrations\MigrationCreator $creator
+     * @param \Illuminate\Foundation\Composer  $composer
      */
     public function __construct(MigrationCreator $creator, Composer $composer)
     {
