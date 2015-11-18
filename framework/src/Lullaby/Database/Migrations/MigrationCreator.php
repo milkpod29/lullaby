@@ -23,6 +23,13 @@ class MigrationCreator
     protected $postCreate = [];
 
     /**
+     * The content.
+     *
+     * @var array
+     */
+    public $content = [];
+
+    /**
      * Create a new migration creator instance.
      *
      * @param  \Illuminate\Filesystem\Filesystem  $files
@@ -69,7 +76,8 @@ class MigrationCreator
     protected function getStub($table, $create, $definition)
     {
         if (is_null($table)) {
-            return $this->files->get($this->getStubPath().'/blank.stub');
+//            return $this->files->get($this->getStubPath().'/blank.stub');
+            return $this->files->get($this->getStubPath().'/lullaby.stub');
         }
 
         // We also have stubs for creating new tables and modifying existing tables
@@ -94,16 +102,16 @@ class MigrationCreator
     {
         $stub = str_replace('DummyClass', $this->getClassName($name), $stub);
 
-        $stub = str_replace('DummyUp', $this->getUpContent($name), $stub);
+        $stub = str_replace('DummyTable', $name, $stub);
 
-        $stub = str_replace('DummyDown', $this->getDownContent($name), $stub);
+        $stub = str_replace('DummyUp', $this->content['up'], $stub);
 
         // Here we will replace the table place-holders with the table specified by
         // the developer, which is useful for quickly creating a tables creation
         // or update migration from the console instead of typing it manually.
-        if (!is_null($table)) {
-            $stub = str_replace('DummyTable', $table, $stub);
-        }
+//        if (!is_null($table)) {
+//            $stub = str_replace('DummyTable', $table, $stub);
+//        }
 
         return $stub;
     }
@@ -116,31 +124,7 @@ class MigrationCreator
      */
     protected function getClassName($name)
     {
-        return Str::studly($name);
-    }
-
-    /**
-     * Get the up content of a migration name.
-     *
-     * @param  string  $name
-     *
-     * @return string
-     */
-    protected function getUpContent($name)
-    {
-        return Str::studly($name);
-    }
-
-    /**
-     * Get the down content of a migration name.
-     *
-     * @param  string  $table
-     *
-     * @return string
-     */
-    protected function getDownContent($table)
-    {
-        return Str::studly($table);
+        return Str::studly("create_{$name}_table");
     }
 
     /**
@@ -177,7 +161,8 @@ class MigrationCreator
      */
     protected function getPath($name, $path)
     {
-        return $path.'/'.$this->getDatePrefix().'_'.$name.'.php';
+//        return $path.'/'.$this->getDatePrefix().'_'.$name.'.php';
+        return $path.'/'.$this->getDatePrefix().'_create_'.$name.'_table.php';
     }
 
     /**
