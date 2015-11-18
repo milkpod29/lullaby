@@ -206,7 +206,7 @@ class MigrationServiceProvider extends ServiceProvider
             // Once we have the migration creator registered, we will create the command
             // and inject the creator. The creator is responsible for the actual file
             // creation of the migrations, and may be extended by these developers.
-            $creator = $app['migration.creator'];
+            $creator = $app['migration.creator.lullaby'];
 
             $composer = $app['composer'];
 
