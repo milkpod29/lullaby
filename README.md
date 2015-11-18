@@ -41,5 +41,5 @@ Lullaby\Database\MigrationServiceProvider::class,
 ### Migrations
 
 ```
-$ php artisan lullaby:migration create_users_table --definition=/tmp/tables.xlsx
+$ php artisan lullaby:migration --definition=/tmp/tables.xlsx
 ```
