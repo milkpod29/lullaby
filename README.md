@@ -53,5 +53,5 @@ $ php artisan lullaby:migration index --definition=/tmp/tables.xlsx
 
 #### Foreign key
 ```
-$ php artisan lullaby:migration foreign --definition=/tmp/tables.xlsx
+$ php artisan lullaby:migration foreignkeys --definition=/tmp/tables.xlsx
 ```
