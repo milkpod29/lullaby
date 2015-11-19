@@ -37,10 +37,12 @@ class PostgresMapper
                 break;
             case 'smallserial':
             case 'serial':
-                $result = "\$table->increments('{$columnName}')";
+//                $result = "\$table->increments('{$columnName}')";
+                $result = "\$table->unsignedInteger('{$columnName}')";
                 break;
             case 'bigserial':
-                $result = "\$table->bigIncrements('{$columnName}')";
+//                $result = "\$table->bigIncrements('{$columnName}')";
+                $result = "\$table->unsignedBigInteger('{$columnName}')";
                 break;
             case 'char':
                 $result = "\$table->char('{$columnName}')";
