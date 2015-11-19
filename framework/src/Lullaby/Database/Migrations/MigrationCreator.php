@@ -52,14 +52,14 @@ class MigrationCreator
      */
     public function create($content, $name, $path, $table = null, $create = false, $definition = null)
     {
-        $path = $this->getPath($name, $path);
+        $path = $this->getPath($content, $name, $path);
 
         // First we will get the stub file for the migration, which serves as a type
         // of template for the migration. Once we have those we will populate the
         // various place-holders, save the file, and run the post create event.
         $stub = $this->getStub($content, $table, $create, $definition);
 
-        $this->files->put($path, $this->populateStub($name, $stub, $table));
+        $this->files->put($path, $this->populateStub($content, $name, $stub, $table));
 
         $this->firePostCreateHooks();
 
@@ -99,9 +99,9 @@ class MigrationCreator
      * @param  string  $table
      * @return string
      */
-    protected function populateStub($name, $stub, $table)
+    protected function populateStub($content, $name, $stub, $table)
     {
-        $stub = str_replace('DummyClass', $this->getClassName($name), $stub);
+        $stub = str_replace('DummyClass', $this->getClassName($content, $name), $stub);
 
         $stub = str_replace('DummyTable', $name, $stub);
 
@@ -120,12 +120,22 @@ class MigrationCreator
     /**
      * Get the class name of a migration name.
      *
+     * @param  string  $content
      * @param  string  $name
+     *
      * @return string
      */
-    protected function getClassName($name)
+    protected function getClassName($content, $name)
     {
-        return Str::studly("create_{$name}_table");
+        switch($content) {
+            case 'index':
+            case 'foreignkey':
+                $className = "add_{$content}_to_{$name}_table";
+                break;
+            default:
+                $className = "create_{$name}_table";
+        }
+        return Str::studly($className);
     }
 
     /**
@@ -155,15 +165,23 @@ class MigrationCreator
     /**
      * Get the full path name to the migration.
      *
+     * @param  string  $content
      * @param  string  $name
      * @param  string  $path
      *
      * @return string
      */
-    protected function getPath($name, $path)
+    protected function getPath($content, $name, $path)
     {
-//        return $path.'/'.$this->getDatePrefix().'_'.$name.'.php';
-        return $path.'/'.$this->getDatePrefix().'_create_'.$name.'_table.php';
+        switch($content) {
+            case 'index':
+            case 'foreignkey':
+                $fileName = "add_{$content}_to_{$name}_table";
+                break;
+            default:
+                $fileName = "create_{$name}_table";
+        }
+        return $path.'/'.$this->getDatePrefix().'_'.$fileName.'.php';
     }
 
     /**
