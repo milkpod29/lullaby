@@ -16,7 +16,7 @@ class MigrateLullabyCommand extends BaseCommand
      *
      * @var string
      */
-    protected $signature = 'lullaby:migration
+    protected $signature = 'lullaby:migration {content : The content of the migration.}
         {--create= : The table to be created.}
         {--table= : The table to migrate.}
         {--path= : The location where the migration file should be created.}
@@ -69,6 +69,8 @@ class MigrateLullabyCommand extends BaseCommand
         // to be freshly created so we can create the appropriate migrations.
 //        $name = $this->input->getArgument('name');
 
+        $content = $this->input->getArgument('content');
+
         $definition = $this->input->getOption('definition');
 
         $table = $this->input->getOption('table');
@@ -82,7 +84,7 @@ class MigrateLullabyCommand extends BaseCommand
         // Now we are ready to write the migration out to disk. Once we've written
         // the migration out, we will dump-autoload for the entire framework to
         // make sure that the migrations are registered by the class loaders.
-        $this->writeMigrationAll($table, $create, $definition);
+        $this->writeMigrationAll($content, $table, $create, $definition);
 
         $this->composer->dumpAutoloads();
     }
@@ -90,13 +92,14 @@ class MigrateLullabyCommand extends BaseCommand
     /**
      * Write the migration file to disk.
      *
+     * @param  string  $content
      * @param  string  $table
      * @param  string  $create
      * @param  string  $definition
      *
      * @return string
      */
-    protected function writeMigrationAll($table, $create, $definition)
+    protected function writeMigrationAll($content, $table, $create, $definition)
     {
         $excel = new MigrationDefinition($definition);
         // get table count.
@@ -108,28 +111,30 @@ class MigrateLullabyCommand extends BaseCommand
             $name = $excel->getCellValue($index, MigrationDefinition::MODEL_NAME);
             // change table name in plural form.
             $name = Str::plural($name);
+            // craete method.
+            $method = "get" . ucfirst(Str::plural($content));
             // set up content.
-            $this->creator->content['up'] = $excel->getContent($index);
+            $this->creator->content['up'] = $excel->$method($index);
 
-            $this->writeMigration($name, $table, $create);
+            $this->writeMigration($content, $name, $table, $create);
         }
     }
-
 
     /**
      * Write the migration file to disk.
      *
+     * @param  string  $content
      * @param  string  $name
      * @param  string  $table
      * @param  bool    $create
      *
      * @return string
      */
-    protected function writeMigration($name, $table, $create)
+    protected function writeMigration($content, $name, $table, $create)
     {
         $path = $this->getMigrationPath();
 
-        $file = pathinfo($this->creator->create($name, $path, $table, $create), PATHINFO_FILENAME);
+        $file = pathinfo($this->creator->create($content, $name, $path, $table, $create), PATHINFO_FILENAME);
 
         $this->line("<info>Created Migration:</info> $file");
     }

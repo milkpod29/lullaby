@@ -49,11 +49,11 @@ class MigrationDefinition
     /**
      * MigrationDefinition constructor.
      *
-     * @param string $filepath
+     * @param string $filePath
      */
-    public function __construct($filepath)
+    public function __construct($filePath)
     {
-        $this->phpExcel = PHPExcel_IOFactory::load($filepath);
+        $this->phpExcel = PHPExcel_IOFactory::load($filePath);
     }
 
     /**
@@ -67,7 +67,7 @@ class MigrationDefinition
 
     /**
      *
-     * @param $index
+     * @param int $index
      *
      * @return \PHPExcel_Worksheet
      * @throws \PHPExcel_Exception
@@ -80,16 +80,27 @@ class MigrationDefinition
 
     /**
      *
-     * @param $index
-     * @param $cell
+     * @param int    $index
+     * @param string $cell
      *
      * @return mixed
      * @throws \PHPExcel_Exception
      */
     public function getCellValue($index, $cell)
     {
-        $sheet =  $this->getActiveSheet($index);
+        $sheet = $this->getActiveSheet($index);
         return $sheet->getCell($cell)->getValue();
+    }
+
+    /**
+     *
+     * @param int $index
+     *
+     * @return array|string
+     */
+    public function getFields($index)
+    {
+        return $this->createFields($this->getActiveSheet($index), self::START_LINE_FIELD);
     }
 
     /**
@@ -98,20 +109,20 @@ class MigrationDefinition
      *
      * @return array|string
      */
-    public function getContent($index)
+    public function getIndices($index)
     {
-        $sheet   = $this->getActiveSheet($index);
+        return $this->createIndices($this->getActiveSheet($index), self::START_LINE_INDEX);
+    }
 
-        $column  = $this->createColumn($sheet,  self::START_LINE_FIELD);
-        $index   = $this->createIndex($sheet,   self::START_LINE_INDEX);
-        $foreign = $this->createForeign($sheet, self::START_LINE_FOREIGN);
-
-        $contents   = [];
-        $contents[] = $column;
-        if (!empty($index))   $contents[] = $index;
-        if (!empty($foreign)) $contents[] = $foreign;
-
-        return implode($this->space, $contents);
+    /**
+     *
+     * @param int $index
+     *
+     * @return array|string
+     */
+    public function getForeignkeys($index)
+    {
+        return $this->createForeignkeys($this->getActiveSheet($index), self::START_LINE_FOREIGN);
     }
 
     /**
@@ -124,7 +135,7 @@ class MigrationDefinition
      *
      * @return array|string
      */
-    protected function createColumn($sheet, $cell, $line = null, $columns = "")
+    protected function createFields($sheet, $cell, $line = null, $columns = "")
     {
         if (empty($columns)) {
             $line = $sheet->getCell($cell)->getValue();
@@ -158,7 +169,7 @@ class MigrationDefinition
         // counts up the line number.
         $line++;
 
-        return $this->createColumn($sheet, $cell, $line, $columns);
+        return $this->createFields($sheet, $cell, $line, $columns);
     }
 
     /**
@@ -171,7 +182,7 @@ class MigrationDefinition
      *
      * @return array|string
      */
-    protected function createIndex($sheet, $cell, $line = null, $index = "")
+    protected function createIndices($sheet, $cell, $line = null, $index = "")
     {
         if (empty($index)) {
             $line = $sheet->getCell($cell)->getValue();
@@ -203,7 +214,7 @@ class MigrationDefinition
         // counts up the line number.
         $line++;
 
-        return $this->createIndex($sheet, $cell, $line, $index);
+        return $this->createIndices($sheet, $cell, $line, $index);
     }
 
     /**
@@ -216,7 +227,7 @@ class MigrationDefinition
      *
      * @return array|string
      */
-    protected function createForeign($sheet, $cell, $line = null, $foreign = "")
+    protected function createForeignkeys($sheet, $cell, $line = null, $foreign = "")
     {
         if (empty($foreign)) {
             $line = $sheet->getCell($cell)->getValue();
@@ -248,6 +259,6 @@ class MigrationDefinition
         // counts up the line number.
         $line++;
 
-        return $this->createForeign($sheet, $cell, $line, $foreign);
+        return $this->createForeignkeys($sheet, $cell, $line, $foreign);
     }
 }

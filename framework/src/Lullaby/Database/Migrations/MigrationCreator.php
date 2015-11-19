@@ -42,6 +42,7 @@ class MigrationCreator
     /**
      * Create a new migration at the given path.
      *
+     * @param  string  $content
      * @param  string  $name
      * @param  string  $path
      * @param  string  $table
@@ -49,14 +50,14 @@ class MigrationCreator
      * @param  object  $definition
      * @return string
      */
-    public function create($name, $path, $table = null, $create = false, $definition = null)
+    public function create($content, $name, $path, $table = null, $create = false, $definition = null)
     {
         $path = $this->getPath($name, $path);
 
         // First we will get the stub file for the migration, which serves as a type
         // of template for the migration. Once we have those we will populate the
         // various place-holders, save the file, and run the post create event.
-        $stub = $this->getStub($table, $create, $definition);
+        $stub = $this->getStub($content, $table, $create, $definition);
 
         $this->files->put($path, $this->populateStub($name, $stub, $table));
 
@@ -68,26 +69,26 @@ class MigrationCreator
     /**
      * Get the migration stub file.
      *
+     * @param  string  $content
      * @param  string  $table
      * @param  bool    $create
      * @param  object  $definition
      * @return string
      */
-    protected function getStub($table, $create, $definition)
+    protected function getStub($content, $table, $create, $definition)
     {
-        if (is_null($table)) {
-//            return $this->files->get($this->getStubPath().'/blank.stub');
-            return $this->files->get($this->getStubPath().'/lullaby.stub');
+        switch($content) {
+            case 'field':
+                $file = $this->files->get($this->getStubPath().'/create.stub');
+                break;
+            case 'index':
+            case 'foreignkey':
+                $file = $this->files->get($this->getStubPath().'/update.stub');
+                break;
+            default:
+                $file = $this->files->get($this->getStubPath().'/blank.stub');
         }
-
-        // We also have stubs for creating new tables and modifying existing tables
-        // to save the developer some typing when they are creating a new tables
-        // or modifying existing tables. We'll grab the appropriate stub here.
-        else {
-            $stub = $create ? 'create.stub' : 'update.stub';
-
-            return $this->files->get($this->getStubPath()."/{$stub}");
-        }
+        return $file;
     }
 
     /**
