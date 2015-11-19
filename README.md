@@ -44,14 +44,17 @@ Lullaby\Database\MigrationServiceProvider::class,
 
 ```
 $ php artisan lullaby:migration field --definition=/tmp/tables.xlsx
+$ php artisan migrate
 ```
 
 #### Index, Unique
 ```
 $ php artisan lullaby:migration index --definition=/tmp/tables.xlsx
+$ php artisan migrate
 ```
 
 #### Foreign key
 ```
 $ php artisan lullaby:migration foreignkey --definition=/tmp/tables.xlsx
+$ php artisan migrate
 ```
