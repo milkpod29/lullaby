@@ -133,6 +133,18 @@ class PostgresMapper
     }
 
     /**
+     * Comment.
+     *
+     * @param array $attributes
+     *
+     * @return string
+     */
+    public function comment(array $attributes)
+    {
+        return "DB::statement(\"COMMENT ON COLUMN {$attributes['table']}.{$attributes['field']} IS '{$attributes['comment']}';\");";
+    }
+
+    /**
      *
      * @param $columns
      * @return string

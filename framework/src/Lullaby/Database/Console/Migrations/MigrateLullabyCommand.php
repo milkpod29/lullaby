@@ -16,12 +16,6 @@ class MigrateLullabyCommand extends BaseCommand
      *
      * @var string
      */
-//    protected $signature = 'lullaby:migration
-//        {--create= : The table to be created.}
-//        {--table= : The table to migrate.}
-//        {--path= : The location where the migration file should be created.}
-//        {--definition= : The table definition file.}';
-
     protected $signature = 'lullaby:migration {content : The content of the migration.}
         {--create= : The table to be created.}
         {--table= : The table to migrate.}
@@ -121,6 +115,8 @@ class MigrateLullabyCommand extends BaseCommand
             $method = "get" . ucfirst(Str::plural($content));
             // set up content.
             $this->creator->content['up'] = $excel->$method($index);
+            // set comment
+            $this->creator->content['comment'] = $excel->getComments($index);
 
             if ($content !== 'field') {
                 if (empty($this->creator->content['up'])) continue;

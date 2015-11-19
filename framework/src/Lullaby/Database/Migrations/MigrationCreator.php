@@ -107,6 +107,8 @@ class MigrationCreator
 
         $stub = str_replace('DummyUp', $this->content['up'], $stub);
 
+        $stub = str_replace('DummyComment', $this->content['comment'], $stub);
+
         // Here we will replace the table place-holders with the table specified by
         // the developer, which is useful for quickly creating a tables creation
         // or update migration from the console instead of typing it manually.

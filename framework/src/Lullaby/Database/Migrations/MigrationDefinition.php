@@ -2,6 +2,8 @@
 
 namespace Lullaby\Database\Migrations;
 
+use Illuminate\Support\Str;
+
 use Lullaby\Database\Schema\Mappers\PostgresMapper;
 use PHPExcel_IOFactory;
 
@@ -17,6 +19,7 @@ class MigrationDefinition
     const START_LINE_FOREIGN_PRIMARY = 'D6';
 
     // field column.
+    const LOGICAL_COLUMN_NAME = 'A'; // logical column name.
     const COLUMN_NAME      = 'B'; // column name.
     const COLUMN_DATA_TYPE = 'C'; // data type.
     const COLUMN_SIZE      = 'D'; // size.
@@ -126,18 +129,29 @@ class MigrationDefinition
     }
 
     /**
-     * Create columns.
+     *
+     * @param int $index
+     *
+     * @return array|string
+     */
+    public function getComments($index)
+    {
+        return $this->createComments($this->getActiveSheet($index), self::START_LINE_FIELD);
+    }
+
+    /**
+     * Create fields.
      *
      * @param object $sheet
      * @param string $cell
      * @param int    $line
-     * @param string $columns
+     * @param string $fields
      *
      * @return array|string
      */
-    protected function createFields($sheet, $cell, $line = null, $columns = "")
+    protected function createFields($sheet, $cell, $line = null, $fields = "")
     {
-        if (empty($columns)) {
+        if (empty($fields)) {
             $line = $sheet->getCell($cell)->getValue();
         }
 
@@ -145,9 +159,9 @@ class MigrationDefinition
 
         // if type column data empty, program will end.
         if (empty($type)) {
-            return $columns;
+            return $fields;
         } else {
-            if (!empty($columns)) $columns .= $this->space;
+            if (!empty($fields)) $fields .= $this->space;
         }
 
         $name     = $sheet->getCell(self::COLUMN_NAME     . $line)->getValue();
@@ -164,16 +178,16 @@ class MigrationDefinition
             'notnull'    => $notNull,
         ];
 
-        $columns .= $mapper->column($name, $attributes);
+        $fields .= $mapper->column($name, $attributes);
 
         // counts up the line number.
         $line++;
 
-        return $this->createFields($sheet, $cell, $line, $columns);
+        return $this->createFields($sheet, $cell, $line, $fields);
     }
 
     /**
-     * Create index.
+     * Create indices.
      *
      * @param object $sheet
      * @param string $cell
@@ -218,7 +232,7 @@ class MigrationDefinition
     }
 
     /**
-     * Create foreign.
+     * Create foreign keys.
      *
      * @param object $sheet
      * @param string $cell
@@ -260,5 +274,48 @@ class MigrationDefinition
         $line++;
 
         return $this->createForeignkeys($sheet, $cell, $line, $foreign);
+    }
+
+    /**
+     * Create comments.
+     *
+     * @param object $sheet
+     * @param string $cell
+     * @param int    $line
+     * @param string $comments
+     *
+     * @return array|string
+     */
+    protected function createComments($sheet, $cell, $line = null, $comments = "")
+    {
+        if (empty($comments)) {
+            $line = $sheet->getCell($cell)->getValue();
+        }
+
+        $comment = $sheet->getCell(self::LOGICAL_COLUMN_NAME . $line)->getValue();
+
+        // if type column data empty, program will end.
+        if (empty($comment)) {
+            return $comments;
+        } else {
+            if (!empty($comments)) $comments .= "\r\n        ";
+        }
+
+        $mapper = new PostgresMapper();
+
+        $name     = $sheet->getCell(self::COLUMN_NAME . $line)->getValue();
+
+        $attributes = [
+            'table'   => Str::plural($sheet->getCell(self::MODEL_NAME)->getValue()),
+            'field'   => $name,
+            'comment' => $comment,
+        ];
+
+        $comments .= $mapper->comment($attributes);
+
+        // counts up the line number.
+        $line++;
+
+        return $this->createComments($sheet, $cell, $line, $comments);
     }
 }
